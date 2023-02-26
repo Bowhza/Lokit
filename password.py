@@ -1,53 +1,35 @@
 #------------------------------------------------------
-# Password generator and password manager with
-# file encryption.
+# LOKIT - Python Password Manager (Rewritten)
 #------------------------------------------------------
-# Make sure to uncomment the "generate_key()" 
-# function call in before you run this program 
-# for the first time to generate a key. Keep the 
-# key safe otherwise the file will be lost forverver.
+# This application uses cryptography, sqlite, and 
+# bcrypt libraries that are required for the program
+# to run.
 #------------------------------------------------------
 # Created by: https://github.com/Bowhza
-# Last Updated: March 7, 2022
+# Last Updated: February 27, 2023
 #------------------------------------------------------
 
+#Importing Files and Libraries
 from string import ascii_letters, digits
-from encryption import encrypt, decrypt, load_key, generate_key
+from encryption import encrypt, decrypt, load_key, generate_key, hashpass, hashpass_login
+from database.database import create_database
 import random
+import sqlite3
 import os
 
-#Uncomment this function and run it once to generate the key.
-#After you can remove or comment it out again.
-#generate_key()
-
-#This will load the key and assign it to the key variable
-key = load_key()
-
 #This is the default file name where the passwords will be stored.
-#You can change the name of the file and uncomment the encrypt()
-#function at the bottom of this python file and run it once.
-file = "passwords.txt"
+file = "passwords.db"
 
 #This gets the current directory of the python file.
 directory = os.getcwd()
 
-#THis function get the user specified password length.
-def get_length():
-    #Error checks user input to see if it is an integer.
-    while True:
-        try:
-            length = int(input("Enter password length. (Min: 10 | Max: 100): "))
-        except:
-            print("Not a valid password length, please try again.\n")
-            continue
-        else:
-            break
-    #This makes sure that the passord is within range.
-    if length > 100:
-        length = 100
-    elif length < 10:
-        length = 10
-    return length
+#Function that will create the database if it does not already exist
+def check_db():
+    if not os.path.exists(f'{directory}/{file}'):
+        print("DATABASE DOES NOT EXIST. CREATING THE DATABASE...")
+        create_database()
+    else:
+        print("DATABASE EXISTS. RUNNING APPLICATION...")
 
 #This will generate the password based on the user specified length.
 def generate_pass(length):
@@ -59,94 +41,220 @@ def generate_pass(length):
     print("Your password is: " + password)
     return password
 
-
-#This will prompt the user if they want to save the password to a file.
-def save_file(password, key):
-    save = input("\nWould you like to save this password (y/n): ").lower()
-    while save != "y" and save != "n":
-        save = input("Invalid input. Try again. (y/n): ").lower()
+#This function creates a user for the password manager
+def create_user(database, cursor):
+    valid_user = False
+    valid_pass = False
+    user_info = []
     
-    #If yes it will try to decrypt the file.
-    if save == "y":
-        run = True
-        try:
-            decrypt(file, key)
-        #If the key is invalid it will stop the program.
-        except:
-            print("Key is invalid. Unable to save password.")
-            run = False
+    while not valid_user:
+        user_name = str(input("Enter a username: "))
+        #Checks if the username exists in the database
+        cursor.execute("""
+            SELECT username FROM users
+            WHERE username = ?
+        """, [user_name])
+        result = cursor.fetchone()
+        #If it does then display the error message.
+        if result != None:
+            print("USERNAME IS ALREADY TAKEN, PLEASE PICK ANOTHER ONE.")
+        #Otherwise add the username to the list
+        else:
+            valid_user = True
+            user_info.append(user_name)
+    #While loop to get the user to enter an account password
+    while not valid_pass:
+        user_pass = str(input("Enter a password: "))
+        if user_pass != str(input("Confirm Password: ")):
+            print("PASSWORDS DO NOT MATCH, TRY AGAIN.")
+        else:
+            valid_pass = True
+            #Creates the hashed password with the salt and returns both
+            hashed, salt = hashpass(user_pass)
+            #Adds the information to the list
+            user_info.append(hashed)
+            user_info.append(salt)
 
-        #If the key is valid and the user selected "y" then it will proceed with saving the password.
-        while run == True:
-            #prompts the user for the place where the password will be used and their email (optional).
-            name = input("Enter a name for the password ex. Discord, Facebook, etc.: ")
-            email = input("Enter email that will be used with the password. (Can be left empty): ")
-            if email == "":
-                total = name + " | " + password + "\n"
-            else:
-                total = name + " | " + email + " | " + password + "\n"
+            #Generates a decryption key
+            generate_key(user_name)
+            #Loads the key and appends to the list
+            key = load_key(user_name)
+            user_info.append(key)
 
-            #opens the file, saves the password, and the closes it.
-            save_file = open(file, "a")
-            save_file.write(total)
-            save_file.close()
+            #Inserts the new account into the users database
+            cursor.execute("""
+            INSERT INTO users VALUES (?,?,?,?)
+            """, (user_info[0], user_info[1], user_info[2], user_info[3]))
+            database.commit()
 
-            print("\nPassword saved to '" + file + "' in this directory: " + directory)
-            print("NOTE: The text file is encrypted and will require the generated key to read the contents.")
-            print("WARNING! If the key is lost the contents of the file will become unrecoverable.")
+            #Displays important message about the decryption key.
+            print(f"IMPORTANT: An encryption key was generated for your user {user_name}.key that will be used" +
+                  "\nto encrypt and decrypt the passwords stored in the database. \nIF THE KEY IS LOST, THE PASSWORDS WILL BE UNACCESSABLE.")
 
-            #Then it encrypts the file again.
-            encrypt(file, key)
-            break
+#This function will log a user into the password manager database if user exists.
+def login_user(database, cursor):
+    user_name = str(input("Enter your username: "))
+
+    #Checks it the username exists in the database of users
+    cursor.execute("""
+        SELECT username FROM users
+        WHERE username = ?
+    """, [user_name])
+    result = cursor.fetchone()
+
+    #If it does not exists then it will display a message.
+    if result == None:
+        print("USER DOES NOT EXISTS. PLEASE REGISTER AN ACCOUNT.")
+    
+    #Otherwise it will prompt the user to login.
     else:
-        print("Password was not saved.")
+        password = str(input("Enter your password: "))
+        #Fetches the hashed password from the database
+        cursor.execute("""
+        SELECT password FROM users
+        WHERE username = ?
+        """, [user_name])
+        result = cursor.fetchone()
+        #Fetches the salt of the password from the database
+        cursor.execute("""
+            SELECT salt FROM users
+            WHERE username = ?
+        """, [user_name])
+        salt = cursor.fetchone()
+        
+        #Checks if the passwords match
+        if result[0] != hashpass_login(password, salt[0]):
+            print("THE PASSWORD IS INCORRECT. EXITING TO MENU.")
+        #If they match then the submenu will display for the user
+        else:
+            option = sub_menu(user_name)
+            if option == 1:
+                #Shows the passwords
+                show_passwords(user_name, cursor)
+            elif option == 2:
+                #Allows the user to enter new data
+                user_data = create_entry(load_key(user_name))
+                #Inserts and commits the data to the database
+                cursor.execute(f"""
+                INSERT INTO accounts VALUES((SELECT username FROM users WHERE username = '{user_name}'),?,?,?,?)
+                """, user_data)
+                database.commit()
 
 #This is the menu where it will ask if the user want to generate or view saved passwords.
-def menu():
-    options = int(input("(1) Generate Password | (2) View saved passwords: "))
+def main_menu():
+    print("""
+    #--------------------------------#
+    # LOKIT - LOCAL PASSWORD MANAGER #
+    # (1) LOGIN                      #
+    # (2) REGISTER ACCOUNT           #
+    # -------------------------------#
+    """)
+    options = int(input("OPTION > "))
     while options != 1 and options != 2:
         options = int(input("Invalid input. Try again: "))
     print()
 
-    if options == 1:
-        return 1
-    else:
-        return 2
+    return options
 
-#This function will display the saved passwords in the terminal/
-def read_passwords(file, key):
-    #Tries to decrypt the file if it has not been already.
+#Sub menu that will ask the user if they want to retrieve or add new password to the database
+def sub_menu(username):
+    print(f"""
+    #--------------------------------#
+    # LOKIT - LOCAL PASSWORD MANAGER #      
+    # (1) RETRIEVE PASSWORDS         #
+    # (2) ADD NEW PASSWORDS          #
+    # -------------------------------#
+    """)
+    print(f"LOGGED IN AS: {username}")
+    options = int(input("OPTION > "))
+    while options != 1 and options != 2:
+        options = int(input("Invalid input. Try again: "))
+    print()
+
+    return options
+
+#Function that creates and inserts a new entry to the database
+def create_entry(key):
+    valid_pass = False
+    while not valid_pass:
+        user_pass = str(input("Enter a password: "))
+        if user_pass != str(input("Confirm Password: ")):
+            print("PASSWORDS DO NOT MATCH, TRY AGAIN.")
+        else:
+            valid_pass = True
+    #All entries that are inserted into the accounts table
+    encrypted_password = encrypt(user_pass, key)
+    username = str(input("Enter a username for this account: "))
+    application = str(input("Enter an application where it will be used: "))
+    web_link = str(input("Enter a link for the site (if applicable): "))
+    #Returns a tuple of the data that will be inserted
+    return (username, encrypted_password, web_link, application)
+
+#Displays the passwords from the database.
+def show_passwords(username, cursor):
     try:
-        decrypt(file, key)
-        print("Here are your passwords:\n")
-        
-        #Then if will open the file and print out each password.
-        password_file = open(file, "r")
-        file_line = password_file.readline()
-        while file_line:
-            print(file_line)
-            file_line = password_file.readline()
-    
-        #closes the file and encrypts it.
-        password_file.close()   
-        encrypt(file, key)
+        key = load_key(username)
     except:
-        print("Key is Invalid.")
+        print("THE KEY COULD NOT BE RETRIEVED, MAKE SURE ITS IN THE ROOT DIRECTORY OF THE LOKIT FOLDER.")
+        return
     
+    #Fetches the usernames
+    cursor.execute(f"""
+    SELECT username FROM accounts
+    WHERE user_id = '{username}'
+    """)
+    usernames = cursor.fetchall()
+
+    #Fetched the passwords
+    cursor.execute(f"""
+    SELECT password FROM accounts
+    WHERE user_id = '{username}'
+    """)
+    passwords = cursor.fetchall()
+
+    decrypted = []
+
+    #Decrypts the passwords
+    for password in passwords:
+        for item in password:
+            decrypted.append(decrypt(item, key))
+
+    #Fetches the application name
+    cursor.execute(f"""
+    SELECT application FROM accounts
+    WHERE user_id = '{username}'
+    """)
+    app = cursor.fetchall()
+
+    #Fetches the URL or the website
+    cursor.execute(f"""
+    SELECT web_link FROM accounts
+    WHERE user_id = '{username}'
+    """)
+    web = cursor.fetchall()
+
+    #Displays all of the information to the console window
+    print("HERE ARE YOUR ACCOUNTS:")
+    for (username, password, application, website) in zip(usernames, decrypted, app, web):
+        print(f"USERNAME: {username[0]} | PASSWORD: {password.decode()} | APPLICATION: {application[0]} | WEBSITE: {website[0]}")
+
 
 #This is the main function that takes in all the other helper functions.
 def main():
-    print("\t-= Password Generator and Manager =-")
-    choice = menu()
-    if choice == 1:
-        length = get_length()
-        password = generate_pass(length)
-        save_file(password, key)
-    elif choice == 2:
-        read_passwords(file, key)
+    check_db()
+    db = sqlite3.connect("passwords.db")
+    cursor = db.cursor()
+
+    running = True
+
+    while running:
+        choice = main_menu()
+        if choice == 1:
+            login_user(db, cursor)
+        if choice == 2:
+            create_user(db ,cursor)
+
 
 #This will run the program.
 if __name__ == "__main__":
-    #Run this function once if you changed the default saved passwords file name.
-    #encrypt(file, key)
-    main()
+    main()  
