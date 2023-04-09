@@ -1,0 +1,29 @@
+{% block newaccform %}
+<form id="new-acc-form" action="/addaccount" method="post">
+    <div>
+        <label for="username">Username</label>
+        <input autocomplete="none" type="text" name="username" required>
+    </div>
+    <div>
+        <label for="password1">Password</label>
+        <input type="password" name="password1" required>
+    </div>
+    <div>
+        <label for="password2">Confirm Password</label>
+        <input type="password" name="password2" required>
+    </div>
+    <div>
+        <label for="application">Application</label>
+        <input autocomplete="none" type="text" name="application" required>
+    </div>
+    <div>
+        <label for="link">Link</label>
+        <input autocomplete="none" type="text" name="link">
+    </div>
+    <div>
+        <br>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+{% endblock %}
+

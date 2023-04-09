@@ -19,6 +19,7 @@ def create_database():
 
     cursor.execute("""
         CREATE TABLE accounts(
+            row_id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id varchar(50),
             username varchar(255) not null,
             password binary(255) not null,
