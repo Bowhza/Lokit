@@ -3,16 +3,16 @@
 {% block body %}
 
 <main>
-    <h1 id="accounts-title">Account</h1>
+    <h1 id="accounts-title"><img class="lokit-logo" src="../static/images/Lokit.png" alt="Lokit Logo"></h1>
     {% if session["name"]%}
     <nav id="accounts-nav">
         <div id="logged-in-as">
             <p>You are logged in as <b>{{session["name"]}}</b>.</p>
-            <a href="/logout">Logout</a>
+            <a id="logout-link" href="/logout">Logout</a>
         </div>
-        <div>
+        <div class="button-div">
             {% for button in nav_btns %}
-                <button name="action" value="{{button}}">{{nav_btns[button]}}</button>
+                <button name="action" value="{{button}}" class="nav-btn">{{nav_btns[button]}}</button>
             {% endfor %}
         </div>
     </nav>
@@ -31,12 +31,13 @@
     <section id="accounts-grid">
         {% for username, password, app, web, rowid in data %}
         <div class="account-block">
-            <p>Username: {{username[0]}}</p>
-            <p>Password: {{password.decode()}}</p>
-            <p>App/Website: <a target="_blank" href="https://{{web[0]}}">{{app[0]}}</a></p>
-            <form action="/removepass" method="post">
+            <h2 class="account-title">{{app[0]}}</h2>
+            <p><span>Username:</span> {{username[0]}}</p>
+            <p><span>Password:</span> {{password.decode()}}</p>
+            <p><span>App/Website:</span> <a target="_blank" href="https://{{web[0]}}">{{web[0]}}</a></p>
+            <form action="/removepass" method="post" class="delete-form">
                 <input hidden type="text" name="id" value="{{rowid[0]}}">
-                <button type="submit">Delete Entry</button>
+                <button type="submit" class="delete-btn">Delete Entry</button>
             </form>
         </div>
         {% endfor %}

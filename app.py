@@ -148,8 +148,8 @@ def addaccount():
             return "Cannot have empty fields for passwords."
         if application.strip() == "":
             return "Cannot have empty application name."
-        if link == "":
-            link = "#"
+        if link.strip() == "":
+            link = "Not Available."
 
         encrypted_password = encrypt(password1, key)
 
@@ -198,4 +198,4 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    app.run(host="127.0.0.1", port="8080", debug=True)

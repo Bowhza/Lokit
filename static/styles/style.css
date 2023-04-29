@@ -1,20 +1,56 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
 
+/*Global Variables*/
 
+:root{
+    --Headline: #272343;
+    --Yellow: #ffd803;
+    --DarkerYellow: #caac00;
+    --Primary: #fffffe;
+    --Tertiary: #bae8e8;
+    --Secondary: #e3f6f5;
+}
+
+/*Default Styles*/
 html, body{
     margin: 0;
     height: 100%;
     position: relative;
+    color: var(--Headline);
+    background-color: var(--Primary);
 }
 
-h1{
+h1, h2, h3{
     font-family: "Poppins", sans-serif;
 }
 
 body{
     font-family: "Roboto Slab", serif;
     display: grid;
+}
+
+button{
+    border: var(--Headline) 2px solid;
+    padding: 10px;
+    background-color: var(--Yellow);
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+input[type='text'], input[type='password']{
+    height: 25px;
+}
+
+.nav-btn:hover,
+.delete-btn:hover,
+#login-btn:hover,
+#register-btn:hover{
+    background-color: var(--DarkerYellow);
+}
+
+.lokit-logo{
+    height: 100px;
 }
 
 #main-container{
@@ -27,8 +63,9 @@ body{
 #form-container{
     display: flex;
     padding: 15px;
-    border: 2px solid black;
+    border: 2px solid var(--Headline);
     border-radius: 10px;
+    box-shadow: 2px 2px 10px;
 }
 
 #login-form{
@@ -55,6 +92,8 @@ footer{
     height: 30px;
 }
 
+/*Account Page Styles*/
+
 #accounts-nav{
     display: flex;
     flex-direction: column;
@@ -68,6 +107,10 @@ footer{
     gap: 10px;
 }
 
+#logout-link:hover{
+    color: red
+}
+
 #accounts-title, #grid-title{
     text-align: center;
 }
@@ -75,15 +118,37 @@ footer{
 #accounts-grid{
     padding: 0 50px;
     display: grid;
-    gap: 15px;
+    gap: 20px;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 }
 
-.account-block{
-    border: 2px solid black;
-    padding: 10px;
+.account-title{
+    margin: 10px 0px 0px;
 }
 
+.account-block{
+    border-left: 5px solid var(--Headline);
+    box-shadow: 1px 1px 10px;
+    border-radius: 10px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.account-block:hover{
+    transform: translate(0px, -3px);
+    border-color: var(--Yellow);
+}
+
+.account-block span {
+    font-weight: bold;
+}
+
+.account-block a{
+    color: var(--Headline);
+}
+
+
+/*Modal Styles*/
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -98,14 +163,24 @@ footer{
 }
   
 .modal-content {
-    background-color: #fefefe;
+    background-color: var(--Primary);
     margin: 15% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 500px;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px;
 }
 
 #new-acc-form{
     display: grid;
     grid-template-columns: 200px;
+}
+
+.button-div{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 0px 25px;
+    justify-content: center;
 }
