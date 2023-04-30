@@ -12,7 +12,7 @@
         </div>
         <div class="button-div">
             {% for button in nav_btns %}
-                <button name="action" value="{{button}}" class="nav-btn">{{nav_btns[button]}}</button>
+                <button name="action" id="{{button}}" class="nav-btn">{{nav_btns[button]}}</button>
             {% endfor %}
         </div>
     </nav>
@@ -22,23 +22,34 @@
         <div class="modal-content">
             <button class="close-btn">&times;</button>
             <h2>Enter the following Information:</h2>
-            {% include 'forms.html' %}
-            {% block newaccform %}{% endblock %}
+            {% include "forms.html" %}            
         </div>
+    </div>
+
+    <div class="modal" id="change-pass-modal">
+        
     </div>
 
     <h2 id="grid-title">Here are your stored passwords:</h2>
     <section id="accounts-grid">
         {% for username, password, app, web, rowid in data %}
         <div class="account-block">
-            <h2 class="account-title">{{app[0]}}</h2>
+            <div>
+                <h2 class="account-title">{{app[0]}}</h2>
+                <form action="/removepass" method="post" class="delete-form">
+                    <input hidden type="text" name="id" value="{{rowid[0]}}">
+                    <button type="submit" class="delete-btn">Delete</button>
+                </form>
+            </div>
             <p><span>Username:</span> {{username[0]}}</p>
-            <p><span>Password:</span> {{password.decode()}}</p>
-            <p><span>App/Website:</span> <a target="_blank" href="https://{{web[0]}}">{{web[0]}}</a></p>
-            <form action="/removepass" method="post" class="delete-form">
-                <input hidden type="text" name="id" value="{{rowid[0]}}">
-                <button type="submit" class="delete-btn">Delete Entry</button>
-            </form>
+            <p class="acc-pass"><span>Password:</span> <input type="password" class="password-field" value="{{password.decode()}}" readonly> <img class="eye-imgs show-pass" src="../static/images/eye.png"></p>
+            <p><span>App/Website:</span> 
+                {% if web[0] != "Not Available." %}
+                <a target="_blank" href="https://{{web[0]}}">{{web[0]}}</a>
+                {% else %}
+                <span>Not Available.</span>
+                {% endif %}
+            </p>
         </div>
         {% endfor %}
     </section>

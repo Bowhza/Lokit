@@ -191,6 +191,76 @@ def removepass():
     conn.close()
     return redirect("/fetchdata")
 
+@app.route("/changepass", methods=["GET", "POST"])
+def changepass():
+    if request.method == "GET":
+        return """
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <h2>Change Master Password</h2>
+            <form id="change-pass-form" action="/changepass" method="post">
+                <div>
+                    <label for="currentpass">Password</label>
+                    <input type="password" name="currentpass" required>
+                </div>
+                <div>
+                    <label for="newpassword">New Password</label>
+                    <input type="password" name="newpassword" required>
+                </div>
+                <div>
+                    <label for="confirmpassword">Confirm Password</label>
+                    <input type="password" name="confirmpassword" required>
+                </div>
+                <div>
+                    <br>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+        """
+    if request.method == "POST":
+        
+        conn = connect_db()
+        cursor = conn.cursor()
+
+        username = session["name"]
+        currentpass = request.form.get("currentpass")
+        newpass = request.form.get("newpassword")
+        confirmpass = request.form.get("confirmpassword")
+        
+        cursor.execute("""
+        SELECT password FROM users
+        WHERE username = ?
+        """, [username])
+        password = cursor.fetchone()
+
+        cursor.execute("""
+        SELECT salt FROM users
+        WHERE username = ?
+        """, [username])
+        salt = cursor.fetchone()
+        
+
+        if(hashpass_login(currentpass, salt[0]) != password[0]):
+            return "The password you entered does not match."
+
+        if(newpass != confirmpass):
+            return "The two passwords do not match."
+        else:
+            try:
+                hashed, salt = hashpass(newpass)
+                cursor.execute("""
+                UPDATE users
+                SET password = ?,
+                    salt = ?
+                WHERE username = ?;
+                """, (hashed, salt, username))
+                conn.commit()
+            except sqlite3.Error as e:
+                return str(e)
+
+        return redirect("/fetchdata")
+
 
 @app.route("/logout")
 def logout():
@@ -198,4 +268,4 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port="8080", debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)
