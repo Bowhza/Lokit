@@ -29,7 +29,7 @@ body{
     display: grid;
 }
 
-input[type='text'], input[type='password']{
+input[type='text'], input[type='password'], .close-btn{
     height: 25px;
 }
 
@@ -96,7 +96,6 @@ footer{
 }
 
 /*Account Page Styles*/
-
 #accounts-nav{
     display: flex;
     flex-direction: column;
@@ -167,12 +166,12 @@ a{
     gap: 5px;
 }
 
-.eye-imgs, .trash-icon{
+.eye-imgs, .trash-icon, #random-icon, .clipboard{
     height: 30px;
     width: 30px;
 }
 
-.delete-btn{
+.delete-btn, #generate-password{
     border: 0px;
     background: none;
 }
@@ -190,6 +189,9 @@ a{
     color: var(--Headline);
 }
 
+#pass-field div{
+    display: flex;
+}
 
 /*Modal Styles*/
 .modal {
@@ -219,7 +221,7 @@ a{
 #change-pass-form, 
 #delete-acc-form{
     display: grid;
-    grid-template-columns: 200px;
+    grid-template-columns: 250px;
 }
 
 .button-div{

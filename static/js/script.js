@@ -20,12 +20,22 @@ $(()=>{
         let parent = e.target.parentElement;
         let input = $(parent).find("input");
         if($(input).attr('type') == "password"){
-            $(parent).find("img").attr("src", "../static/images/no-eye.png");
+            $(parent).find(".eye-imgs").attr("src", "../static/images/no-eye.svg");
             $(input).attr("type", "text");
         }else{
-            $(parent).find("img").attr("src", "../static/images/eye.png");
+            $(parent).find(".eye-imgs").attr("src", "../static/images/eye.svg");
             $(input).attr("type", "password");
         }
+    })
+
+    $(".clipboard").on("click", (e)=>{
+        let parent = e.target.parentElement;
+        let input = parent.children[1];
+        console.log(input);
+        input.select();
+        input.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(input.value);
+        alert("Password Copied.");
     })
 
     $("#change-master-pass").on("click", (e) =>{        
@@ -57,6 +67,21 @@ $(()=>{
 
         function error(){
             console.log("ERROR");
+        }
+    })
+
+    $("#generate-password").on("click", ()=>{
+        AJAXRequest("/genpass", "GET", "", "html", success, error)
+
+        function success(data){
+            $("[name='password1']").val(data);
+            $("[name='password2']").val(data);
+        }
+
+        function error(data){
+            if(data.status == 429){
+                alert("Too many requests are being sent. Please wait a minute.")
+            }
         }
     })
 })
@@ -97,4 +122,3 @@ function AJAXRequest(url, type, data, dataType, success, error){
 
     $.ajax(options);
 }
-

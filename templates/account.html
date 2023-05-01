@@ -42,7 +42,9 @@
                 </form>
             </div>
             <p><span>Username:</span> {{username[0]}}</p>
-            <p class="acc-pass"><span>Password:</span> <input type="password" class="password-field" value="{{password.decode()}}" readonly> <img class="eye-imgs show-pass" src="../static/images/eye.png"></p>
+            <p class="acc-pass">
+                <span>Password:</span> <input type="password" class="password-field" value="{{password.decode()}}" readonly> <img class="eye-imgs show-pass" src="../static/images/eye.svg"> <img src="../static/images/clipboard.svg" alt="clipboard" class="clipboard">
+            </p>
             <p><span>App/Website:</span> 
                 {% if web[0] != "Not Available." %}
                 <a target="_blank" href="https://{{web[0]}}">{{web[0]}}</a>

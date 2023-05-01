@@ -4,9 +4,14 @@
         <label for="username">Username</label>
         <input autocomplete="none" type="text" name="username" required>
     </div>
-    <div>
+    <div id="pass-field">
         <label for="password1">Password</label>
-        <input type="password" name="password1" required>
+        <div>
+            <input type="password" name="password1" required>
+            <button id="generate-password" type="button">
+                <img id="random-icon" src="../static/images/random-icon.svg" alt="Random">
+            </button>
+        </div>
     </div>
     <div>
         <label for="password2">Confirm Password</label>
@@ -17,7 +22,7 @@
         <input autocomplete="none" type="text" name="application" required>
     </div>
     <div>
-        <label for="link">Link</label>
+        <label for="link">Website Link</label>
         <input autocomplete="none" type="text" name="link">
     </div>
     <div>
