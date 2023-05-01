@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div class="modal" id="change-pass-modal">
+    <div class="modal" id="fetched-modal">
         
     </div>
 
@@ -38,7 +38,7 @@
                 <h2 class="account-title">{{app[0]}}</h2>
                 <form action="/removepass" method="post" class="delete-form">
                     <input hidden type="text" name="id" value="{{rowid[0]}}">
-                    <button type="submit" class="delete-btn">Delete</button>
+                    <button type="submit" class="delete-btn"><img src="../static/images/trash.svg" class="trash-icon"></button>
                 </form>
             </div>
             <p><span>Username:</span> {{username[0]}}</p>

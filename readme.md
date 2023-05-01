@@ -14,13 +14,14 @@ Lokit is a password generator and password vault project made in python using bc
 #### April 30, 2023
 - [x] Hide passwords in account blocks by default and add a button to make it visible.
 - [x] Add feature to change the account password.
+- [x] Add feature to be able to delete the master account.
+- [x] Add "create new account" functionality.
 
 ### Future Additions
 
-- [ ] Add feature to be able to delete the master account.
+- [ ] Write better code documentation.
 - [ ] Create button that will generate a random password a user can use for their accounts.
 - [ ] Add ability to copy username and/or password to clipboard.
-- [ ] Add "create new account" functionality.
 - [ ] Dark Mode? 🌑
 
 **More items may be added to this list in the future.**

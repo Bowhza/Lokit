@@ -4,7 +4,7 @@
 <main id="main-container">
     <h1><a href="/"><img class="lokit-logo" src="../static/images/Lokit.png" alt="Lokit Logo"></a></h1>
     <div id="form-container">
-        <form id="login-form" action="/account" method="post">
+        <form id="register-form" action="/register" method="post">
             <div>
                 <label for="username">Username:</label>
                 <input autocomplete="none" type="text" name="username" id="username" placeholder="ex. Username123" required>
@@ -13,17 +13,16 @@
                 <label for="password">Password: </label>
                 <input type="password" name="password" id="password" placeholder="Shhhh...." required>
             </div>
-            <button id="login-btn" type="submit" name="act" value="Login">Login</button>
-            {% if failed %}
-                <p>Login Failed. Try Again.</p>
-            {% elif exists == False %}
-                <p>The username does not exist.</p>
-            {% elif exists %}
-                <p>The username already exists.</p>
-            {% elif success %}
-                <p>Account created successfully.</p>
+            <div>
+                <label for="confirmpass">Confirm Pass: </label>
+                <input type="password" name="confirmpass" id="confirmpass" placeholder="Shhhh...." required>
+            </div>
+            {% if exists %}
+            <p>The username is already taken.</p>
+            {% elif match == False %}
+            <p>The passwords do not match.</p>
             {% endif %}
-            <a href="/register">Click here to create an account.</a>
+            <button id="register-btn" type="submit" value="Register">Register</button>
         </form>
     </div>
 </main>

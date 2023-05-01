@@ -23,6 +23,59 @@ def index():
         return render_template("index.html")
     return redirect("/fetchdata")
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if session.get("name"):
+        return redirect("/fetchdata")
+
+    if request.method == "POST":
+        conn = connect_db()
+        cursor = conn.cursor()
+
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirmpass = request.form.get("confirmpass")
+
+        try:
+            cursor.execute("""
+            SELECT username
+            FROM users
+            WHERE username = ?
+            """,[username])
+            query = cursor.fetchone();
+
+            if(query != None):
+                return render_template("register.html", exists=True)
+
+        except sqlite3.Error as e:
+            return str(e)
+
+        if(password != confirmpass):
+            return render_template("register.html", match=False)
+        
+        else:
+            
+            hashed, salt = hashpass(password)
+            generate_key(username)
+            key = load_key(username)
+
+            user_info = [username, hashed, salt, key]
+
+            try:
+                cursor.execute("""
+                INSERT INTO users VALUES (?,?,?,?)
+                """, (user_info[0], user_info[1], user_info[2], user_info[3]))
+                conn.commit()
+
+            except sqlite3.Error as e:
+                return str(e)
+
+            return render_template("index.html", success=True)
+
+    if request.method == "GET":
+        return render_template("register.html")
+
+
 @app.route("/account", methods=["GET", "POST"])
 def account():
     if request.method == "POST":
@@ -63,7 +116,7 @@ def account():
 
             session["name"] = username
             return redirect("/")
-        
+
 @app.route("/fetchdata")
 def fetchdata():
     conn = connect_db()
@@ -198,7 +251,7 @@ def changepass():
         <div class="modal-content">
             <button class="close-btn">&times;</button>
             <h2>Change Master Password</h2>
-            <form id="change-pass-form" action="/changepass" method="post">
+            <form id="change-pass-form" action="/changepass" onsubmit="return changePassValidation()" method="post">
                 <div>
                     <label for="currentpass">Password</label>
                     <input type="password" name="currentpass" required>
@@ -212,8 +265,8 @@ def changepass():
                     <input type="password" name="confirmpassword" required>
                 </div>
                 <div>
-                    <br>
-                    <button type="submit">Submit</button>
+                    <p id="matching-text"></p>
+                    <button type="submit" class="submit-btn">Submit</button>
                 </div>
             </form>
         </div>
@@ -242,10 +295,14 @@ def changepass():
         
 
         if(hashpass_login(currentpass, salt[0]) != password[0]):
-            return "The password you entered does not match."
+            return "The password you entered does not match your current password."
 
-        if(newpass != confirmpass):
+        elif(hashpass_login(currentpass, salt[0]) == password[0]):
+            return "Cannot change password to your current password."
+
+        elif(newpass != confirmpass):
             return "The two passwords do not match."
+        
         else:
             try:
                 hashed, salt = hashpass(newpass)
@@ -260,8 +317,79 @@ def changepass():
                 return str(e)
 
         return redirect("/fetchdata")
+    
+@app.route("/deleteacc", methods=["GET", "POST"])
+def deleteacc():
+    if request.method == "GET":
+        return """
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <h2>Delete Master Account</h2>
+            <form id="delete-acc-form" action="/deleteacc" onsubmit="return formValidation()" method="post">
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" name="password" required>
+                </div>
+                <div>
+                    <label for="confirmpassword">Confirm Password</label>
+                    <input type="password" name="confirmpassword" required>
+                </div>
+                <div>
+                    <p id="matching-text"></p>
+                    <button type="submit" class="submit-btn">Submit</button>
+                </div>
+            </form>
+        </div>
+        """
+    if request.method == "POST":
+        
+        conn = connect_db()
+        cursor = conn.cursor()
 
+        username = session["name"]
+        password = request.form.get("password")
+        confirmpass = request.form.get("confirmpassword")
 
+        cursor.execute("""
+        SELECT password FROM users
+        WHERE username = ?
+        """, [username])
+        dbpassword = cursor.fetchone()
+
+        cursor.execute("""
+        SELECT salt FROM users
+        WHERE username = ?
+        """, [username])
+        salt = cursor.fetchone()
+
+        if(password != confirmpass): 
+            return "Password fields do not match."
+        
+        elif(hashpass_login(password, salt[0]) != dbpassword[0]):
+            return "Password entered does not match the account password."
+        
+        else:
+            try:
+                cursor.execute("""
+                DELETE FROM accounts
+                WHERE user_id = ?
+                """, [username])
+
+                cursor.execute("""
+                DELETE FROM users
+                WHERE username = ?
+                """, [username])
+
+                conn.commit()
+
+                os.remove(f"{username}.key")
+
+            except sqlite3.Error as e:
+                return str(e)
+            
+        session["name"] = None
+        return redirect("/")
+        
 @app.route("/logout")
 def logout():
     session["name"] = None

@@ -2,7 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
 
 /*Global Variables*/
-
 :root{
     --Headline: #272343;
     --Yellow: #ffd803;
@@ -35,8 +34,8 @@ input[type='text'], input[type='password']{
 }
 
 .nav-btn,
-button[type='submit'],
 #login-btn,
+.submit-btn,
 #register-btn{
     border: var(--Headline) 2px solid;
     padding: 10px;
@@ -47,8 +46,8 @@ button[type='submit'],
 }
 
 .nav-btn:hover,
-button[type='submit']:hover,
 #login-btn:hover,
+.submit-btn:hover,
 #register-btn:hover{
     background-color: var(--DarkerYellow);
 }
@@ -72,7 +71,7 @@ button[type='submit']:hover,
     box-shadow: 2px 2px 10px;
 }
 
-#login-form{
+#login-form, #register-form{
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -115,7 +114,11 @@ footer{
     color: red
 }
 
-#accounts-title, #grid-title, #login-form p{
+#accounts-title, 
+#grid-title, 
+#login-form p, 
+#register-form p, 
+a{
     text-align: center;
 }
 
@@ -138,7 +141,9 @@ footer{
     transition: all 0.3s ease;
 }
 
-.account-block > div, #login-form div{
+.account-block > div, 
+#login-form div, 
+#register-form div{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -162,9 +167,14 @@ footer{
     gap: 5px;
 }
 
-.eye-imgs{
+.eye-imgs, .trash-icon{
     height: 30px;
     width: 30px;
+}
+
+.delete-btn{
+    border: 0px;
+    background: none;
 }
 
 .account-block:hover{
@@ -205,7 +215,9 @@ footer{
     box-shadow: 2px 2px 10px;
 }
 
-#new-acc-form, #change-pass-form{
+#new-acc-form, 
+#change-pass-form, 
+#delete-acc-form{
     display: grid;
     grid-template-columns: 200px;
 }
