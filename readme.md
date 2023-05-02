@@ -1,6 +1,6 @@
 # Lokit
 
-Lokit is a password generator and password vault project made in python using bcrypt, cryptography, sqlite3, and flask. This is the GUI update test branch that will be merged to main in the future. The flask server is meant to run on the local network, and those who are connected can access the application.
+Lokit is a password generator and password vault project made in python using bcrypt, cryptography, sqlite3, and flask. The project has been converted from a console application into a web application. The flask server is meant to run on the local network, and those who are connected can access the web app.
 
 ## To-Do List
 
@@ -21,11 +21,13 @@ Lokit is a password generator and password vault project made in python using bc
 - [x] Write better code documentation.
 - [x] Create button that will generate a random password a user can use for their accounts.
 - [x] Add ability to copy password to the clipboard.<br>
+- [x] Updated readme.md and requirements.txt
 
 **<span style="color:red">NOTE: The ability to copy text to the clipboard is only available over HTTPS. The application uses a dummy certificate to achieve this functionality and therefore will say that the website is unsecure. The user can choose to modify the application to use their own SSL Certificate.</span>**
 
 ### Future Additions
 
+- [ ] Compile into a standalone executable if possible.
 - [ ] UI Changes and Bug Fixes.
 - [ ] Dark Mode? 🌑
 
@@ -36,6 +38,7 @@ Lokit is a password generator and password vault project made in python using bc
 **The following libraries are required for the application to run:**
 - Flask
 - Flask-Session
+- Flask-Limiter
 - SQLite
 - BCrypt
 - Cryptography
