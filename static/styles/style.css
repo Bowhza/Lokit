@@ -122,16 +122,10 @@ a{
 }
 
 #accounts-grid{
+    padding: 0 50px 50px;
     display: grid;
-    padding: 15px 50px 50px;
     gap: 20px;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-}
-
-@media screen and (max-width: 500px) {
-    #accounts-grid{
-        padding: 15px 25px 50px;
-    }
 }
 
 .account-title{
