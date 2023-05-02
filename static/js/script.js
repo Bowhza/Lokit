@@ -1,6 +1,6 @@
 $(()=>{
     $("#new-pass").on("click", ()=>{
-        $("#newpass-modal").css("display", "block");
+        $("#newpass-modal").css("display", "flex");
     })
 
     $(".close-btn").on("click", ()=>{
@@ -43,7 +43,7 @@ $(()=>{
         
         function success(data){
             $("#fetched-modal").html(data);
-            $("#fetched-modal").css("display", "block");
+            $("#fetched-modal").css("display", "flex");
             $("#fetched-modal").find(".close-btn").click((e)=>{
                 $("#fetched-modal").css("display", "none");
             })
@@ -59,7 +59,7 @@ $(()=>{
 
         function success(data){
             $("#fetched-modal").html(data);
-            $("#fetched-modal").css("display", "block");
+            $("#fetched-modal").css("display", "flex");
             $("#fetched-modal").find(".close-btn").click((e)=>{
                 $("#fetched-modal").css("display", "none");
             })

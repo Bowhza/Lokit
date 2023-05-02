@@ -326,7 +326,6 @@ def removepass():
 
 #Route used for changing the master password.
 @app.route("/changepass", methods=["GET", "POST"])
-@limiter.limit("1 per minute")
 def changepass():
     #If the HTTP method is GET it will return html for the form
     if request.method == "GET":
@@ -336,7 +335,7 @@ def changepass():
             <h2>Change Master Password</h2>
             <form id="change-pass-form" action="/changepass" onsubmit="return changePassValidation()" method="post">
                 <div>
-                    <label for="currentpass">Password</label>
+                    <label for="currentpass">Password</label><br>
                     <input type="password" name="currentpass" required>
                 </div>
                 <div>
@@ -421,7 +420,7 @@ def deleteacc():
             <h2>Delete Master Account</h2>
             <form id="delete-acc-form" action="/deleteacc" onsubmit="return formValidation()" method="post">
                 <div>
-                    <label for="password">Password</label>
+                    <label for="password">Password</label><br>
                     <input type="password" name="password" required>
                 </div>
                 <div>
