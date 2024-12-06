@@ -4,12 +4,12 @@ import bcrypt
 #This fucntion generates the key and stores it in a key file. 
 def generate_key(username):
     key = Fernet.generate_key()
-    with open(f"{username}.key", "wb") as key_file:
+    with open(f"/keys/{username}.key", "wb") as key_file:
         key_file.write(key)
 
 #This functon reads the key from the key file and returns it.
 def load_key(keyname):
-    return open(f"{keyname}.key", "rb").read()
+    return open(f"/keys/{keyname}.key", "rb").read()
 
 #This is the function that encrypts the password
 def encrypt(password, key):

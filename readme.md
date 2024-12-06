@@ -27,7 +27,7 @@ Lokit is a password generator and password vault project made in python using bc
 - [x] Added a docker compose file to run the application in a container.
 - [x] Added a .gitignore file.
 
-[!Important]
+> [!Important]
 > The ability to copy text to the clipboard is only available over HTTPS. 
 > The application uses a dummy certificate to achieve this functionality and therefore will say that the website is unsecure. 
 > The user can choose to modify the application to use their own SSL Certificate.

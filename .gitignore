@@ -1,5 +1,7 @@
 *.db
 *.key
+*.pem
+*.csr
 .venv
 flask_session
 .idea/

@@ -29,6 +29,10 @@ Session(app)
 if not os.path.exists("./passwords.db"):
     create_database()
 
+# Creates the keys directory if it does not exist.
+if not os.path.exists("./keys"):
+    os.mkdir("./keys")
+
 #Used to attempt to connect to the SQLite Database.
 def connect_db():
     conn = None
@@ -479,7 +483,7 @@ def deleteacc():
             """, [username])
             conn.commit()
             #Deletes the decryption key.
-            os.remove(f"{username}.key")
+            os.remove(f"/keys/{username}.key")
         except sqlite3.Error as e:
             return str(e)
         
