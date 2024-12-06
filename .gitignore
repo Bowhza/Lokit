@@ -1,0 +1,7 @@
+*.db
+*.key
+.venv
+flask_session
+.idea/
+__pycache__/
+database/__pycache__/

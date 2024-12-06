@@ -1,0 +1,12 @@
+services:
+  lokit-server:
+    image: python:3.11
+    container_name: lokit-server
+    working_dir: /app
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    command: sh -c "pip install -r requirements.txt && gunicorn -w 4 -b 0.0.0.0:8080 app:app"
+    environment:
+      - FLASK_APP=app.py

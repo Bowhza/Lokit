@@ -1,6 +1,6 @@
 # Lokit
 
-Lokit is a password generator and password vault project made in python using bcrypt, cryptography, sqlite3, and flask. The project has been converted from a console application into a web application. The flask server is meant to run on the local network, and those who are connected can access the web app.
+Lokit is a password generator and password vault project made in python using bcrypt, cryptography, sqlite3, and flask. The Lokit server is meant to run on the local network.
 
 ## To-Do List
 
@@ -23,39 +23,29 @@ Lokit is a password generator and password vault project made in python using bc
 - [x] Add ability to copy password to the clipboard.<br>
 - [x] Updated readme.md and requirements.txt
 
+#### December 6, 2024
+- [x] Added a docker compose file to run the application in a container.
+- [x] Added a .gitignore file.
+
 **<span style="color:red">NOTE: The ability to copy text to the clipboard is only available over HTTPS. The application uses a dummy certificate to achieve this functionality and therefore will say that the website is unsecure. The user can choose to modify the application to use their own SSL Certificate.</span>**
 
 ### Future Additions
 
-- [ ] Compile into a standalone executable if possible.
 - [ ] UI Changes and Bug Fixes.
 - [ ] Dark Mode? 🌑
 
 **More items may be added to this list in the future.**
 
-## Dependencies
+## How to run the application
 
-**The following libraries are required for the application to run:**
-- Flask
-- Flask-Session
-- Flask-Limiter
-- SQLite
-- BCrypt
-- Cryptography
-
-**You can use the provided requirements file in the root directory.**<br>
-
+1. Install Docker and Docker Compose on your machine.
+2. Clone the repository.
+3. Navigate to the root directory of the project, and open it in your terminal.
+4. Run the following command to build the docker image and start the container.
+```bash
+docker-compose up --build
 ```
-pip install -r requirements.txt
-```
-
-## How To Run
-
-1. Run the app.py script to start the flask server.
-
-2. Then <kbd>CTRL</kbd> + <kbd>Right Mouse Click</kbd> on the 'Running on' link in the terminal.
-
-3. The Web App should now have opened in your default browser.
+5. You can now access the application on the local IP address of the machine running the container on port 8080.
 
 **Note: The Flask server is running in debug mode while these updates are still being worked on.**
 
