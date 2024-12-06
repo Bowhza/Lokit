@@ -7,6 +7,11 @@ services:
       - "8080:8080"
     volumes:
       - .:/app
-    command: sh -c "pip install -r requirements.txt && gunicorn -w 4 -b 0.0.0.0:8080 app:app"
+    command: sh -c "pip install -r requirements.txt && \
+                     openssl genpkey -algorithm RSA -out /app/key.pem && \
+                     openssl req -new -key /app/key.pem -out /app/cert.csr -subj '/CN=localhost' && \
+                     openssl x509 -req -in /app/cert.csr -signkey /app/key.pem -out /app/cert.pem && \
+                     gunicorn -w 4 -b 0.0.0.0:8080 --certfile=/app/cert.pem --keyfile=/app/key.pem app:app"
     environment:
       - FLASK_APP=app.py
+      - FLASK_DEBUG=production

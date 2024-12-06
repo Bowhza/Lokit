@@ -27,14 +27,10 @@ Lokit is a password generator and password vault project made in python using bc
 - [x] Added a docker compose file to run the application in a container.
 - [x] Added a .gitignore file.
 
-**<span style="color:red">NOTE: The ability to copy text to the clipboard is only available over HTTPS. The application uses a dummy certificate to achieve this functionality and therefore will say that the website is unsecure. The user can choose to modify the application to use their own SSL Certificate.</span>**
-
-### Future Additions
-
-- [ ] UI Changes and Bug Fixes.
-- [ ] Dark Mode? 🌑
-
-**More items may be added to this list in the future.**
+[!Important]
+> The ability to copy text to the clipboard is only available over HTTPS. 
+> The application uses a dummy certificate to achieve this functionality and therefore will say that the website is unsecure. 
+> The user can choose to modify the application to use their own SSL Certificate.
 
 ## How to run the application
 
@@ -45,9 +41,7 @@ Lokit is a password generator and password vault project made in python using bc
 ```bash
 docker-compose up --build
 ```
-5. You can now access the application on the local IP address of the machine running the container on port 8080.
-
-**Note: The Flask server is running in debug mode while these updates are still being worked on.**
+5. You can now access the application on `https://{IP Address}:8080` where the "IP Address" is the machine running the container.
 
 ## Authors
 
