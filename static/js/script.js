@@ -1,6 +1,7 @@
 $(()=>{
     $("#new-pass").on("click", ()=>{
         $("#newpass-modal").css("display", "flex");
+        $("#settings-menu").css("display", "none");
     })
 
     $(".close-btn").on("click", ()=>{
@@ -38,6 +39,10 @@ $(()=>{
         alert("Password Copied.");
     })
 
+    $("#settings-btn").on("click", (e)=> {
+        $("#settings-menu").css("display", (_, current) => current === "none" ? "grid" : "none");
+    })
+
     $("#change-master-pass").on("click", (e) =>{        
         AJAXRequest("/changepass", "GET", "", "html", success, error);
         
@@ -47,6 +52,7 @@ $(()=>{
             $("#fetched-modal").find(".close-btn").click((e)=>{
                 $("#fetched-modal").css("display", "none");
             })
+            $("#settings-menu").css("display", "none");
         }
 
         function error(){
@@ -63,6 +69,7 @@ $(()=>{
             $("#fetched-modal").find(".close-btn").click((e)=>{
                 $("#fetched-modal").css("display", "none");
             })
+            $("#settings-menu").css("display", "none");
         }
 
         function error(){

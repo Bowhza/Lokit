@@ -6,14 +6,19 @@
     <div id="form-container">
         <form id="login-form" action="/account" method="post">
             <div>
-                <label for="username">Username:</label>
+                <label for="username">Username:
+                </label>
                 <input autocomplete="none" type="text" name="username" id="username" placeholder="ex. Username123" required>
             </div>
             <div>
-                <label for="password">Password: </label>
+                <label for="password">Password:
+                </label>
                 <input type="password" name="password" id="password" placeholder="Shhhh...." required>
             </div>
-            <button id="login-btn" type="submit" name="act" value="Login">Login</button>
+            <button class="login-form-btn" type="submit" name="act" value="Login">Login</button>
+            <button type="button" onclick="location.href = '/register';" class="login-form-btn">
+                Create Account
+            </button>
             {% if failed %}
                 <p>Login Failed. Try Again.</p>
             {% elif exists == False %}
@@ -23,7 +28,6 @@
             {% elif success %}
                 <p>Account created successfully.</p>
             {% endif %}
-            <a href="/register">Click here to create an account.</a>
         </form>
     </div>
 </main>

@@ -511,5 +511,5 @@ def logout():
 
 # Runs the server on any ip and port is set to 8080 (change to 0 to auto pick),
 # debugging set to true while in development.
-# if __name__ == "__main__":
-#    app.run(host="0.0.0.0", port=8080, ssl_context="adhoc")
+if __name__ == "__main__":
+   app.run(host="0.0.0.0", port=8080, ssl_context="adhoc")

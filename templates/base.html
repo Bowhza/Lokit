@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css')}}">
-        <link rel="icon" href="{{ url_for('static', filename='images/Lokit-icon.png')}}">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-        <script src="{{url_for('static', filename='js/script.js')}}"></script>
-        <title>Lokit</title>
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/Lokit-icon.png') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <title>Lokit</title>
+</head>
+<body>
+    {% block body %}{% endblock %}
     <footer>
-        <p>Early Access Version</p>
+        <p>Use at your own discretion.</p>
         <div id="github-div">
             <a href="https://github.com/Bowhza/Lokit" target="_blank">
                 <img id="github-icon" src="../static/images/github.png" alt="Github Icon">
@@ -22,4 +21,6 @@
             <p>GitHub Repo</p>
         </div>
     </footer>
+</body>
+
 </html>

@@ -1,60 +1,68 @@
 {% extends "base.html" %}
 
 {% block body %}
-
-<main>
-    <h1 id="accounts-title"><img class="lokit-logo" src="../static/images/Lokit.png" alt="Lokit Logo"></h1>
-    {% if session["name"]%}
-    <nav id="accounts-nav">
+    {% set nav_btns_list = nav_btns|dictsort %}
+    <header>
+        <img class="lokit-logo" src="../static/images/Lokit.png" alt="Lokit Logo">
         <div id="logged-in-as">
-            <p>You are logged in as <b>{{session["name"]}}</b>.</p>
-            <a id="logout-link" href="/logout">Logout</a>
+            {% if session["name"] %}
+                <p class="logged-in-text">Logged in as <b>{{ session["name"] }}</b>.</p>
+                <button class="nav-btn" id="settings-btn">Settings</button>
+                <button class="nav-btn" onclick="location.href = '/logout'">Logout</button>
+            {% endif %}
         </div>
-        <div class="button-div">
-            {% for button in nav_btns %}
-                <button name="action" id="{{button}}" class="nav-btn">{{nav_btns[button]}}</button>
+    </header>
+    <main>
+        <div id="newpass-modal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn">&times;</button>
+                <h2>Enter the following Information:</h2>
+                {% include "forms.html" %}
+            </div>
+        </div>
+
+        <div id="settings-menu">
+            {% for button in nav_btns_list %}
+                <button name="action" id="{{ button[0] }}" class="nav-btn">{{ button[1] }}</button>
             {% endfor %}
         </div>
-    </nav>
-    {% endif %}
 
-    <div id="newpass-modal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn">&times;</button>
-            <h2>Enter the following Information:</h2>
-            {% include "forms.html" %}            
+        <div class="modal" id="fetched-modal">
+
         </div>
-    </div>
 
-    <div class="modal" id="fetched-modal">
-        
-    </div>
+        <h2 id="grid-title" style="margin-bottom: 0">Password List:</h2>
+        <section id="accounts-grid">
+            {% for username, password, app, web, rowid in data %}
+                <div class="account-block">
+                    <div class="account-links">
+                        <h2 class="account-title">
+                            <a target="_blank" href="https://{{ web[0] }}">{{ app[0] }}</a>
+                        </h2>
+                        <form action="/removepass" method="post" class="delete-form">
+                            <input hidden type="text" name="id" value="{{ rowid[0] }}">
+                            <button type="submit" class="delete-btn"><img src="../static/images/trash.svg"
+                                                                          class="trash-icon">
+                            </button>
+                        </form>
+                    </div>
+                    <div class="account-fields">
+                        <p><span>Username:</span> {{ username[0] }}</p>
+                        <p class="acc-pass">
+                            <span>Password:</span> <input type="password" class="password-field"
+                                                          value="{{ password.decode() }}" readonly> <img
+                                class="eye-imgs show-pass" src="../static/images/eye.svg"> <img
+                                src="../static/images/clipboard.svg" alt="clipboard" class="clipboard">
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
 
-    <h2 id="grid-title">Here are your stored passwords:</h2>
-    <section id="accounts-grid">
-        {% for username, password, app, web, rowid in data %}
-        <div class="account-block">
-            <div>
-                <h2 class="account-title">{{app[0]}}</h2>
-                <form action="/removepass" method="post" class="delete-form">
-                    <input hidden type="text" name="id" value="{{rowid[0]}}">
-                    <button type="submit" class="delete-btn"><img src="../static/images/trash.svg" class="trash-icon"></button>
-                </form>
-            </div>
-            <p><span>Username:</span> {{username[0]}}</p>
-            <p class="acc-pass">
-                <span>Password:</span> <input type="password" class="password-field" value="{{password.decode()}}" readonly> <img class="eye-imgs show-pass" src="../static/images/eye.svg"> <img src="../static/images/clipboard.svg" alt="clipboard" class="clipboard">
-            </p>
-            <p><span>App/Website:</span> 
-                {% if web[0] != "Not Available." %}
-                <a target="_blank" href="https://{{web[0]}}">{{web[0]}}</a>
-                {% else %}
-                <span>Not Available.</span>
-                {% endif %}
-            </p>
-        </div>
-        {% endfor %}
-    </section>
-</main>
-    
+        <style>
+            body {
+                grid-template-rows: 5em 1fr 5em;
+            }
+        </style>
+    </main>
 {% endblock %}
