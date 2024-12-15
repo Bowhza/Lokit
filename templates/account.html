@@ -11,6 +11,11 @@
                 <button class="nav-btn" onclick="location.href = '/logout'">Logout</button>
             {% endif %}
         </div>
+        <div id="settings-menu">
+            {% for button in nav_btns_list %}
+                <button name="action" id="{{ button[0] }}" class="nav-btn">{{ button[1] }}</button>
+            {% endfor %}
+        </div>
     </header>
     <main>
         <div id="newpass-modal" class="modal">
@@ -19,12 +24,6 @@
                 <h2>Enter the following Information:</h2>
                 {% include "forms.html" %}
             </div>
-        </div>
-
-        <div id="settings-menu">
-            {% for button in nav_btns_list %}
-                <button name="action" id="{{ button[0] }}" class="nav-btn">{{ button[1] }}</button>
-            {% endfor %}
         </div>
 
         <div class="modal" id="fetched-modal">
